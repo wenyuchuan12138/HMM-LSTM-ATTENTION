@@ -1,0 +1,6 @@
+model,threshold,direction,val_f1
+B1_seasonal_residual_threshold_tuned,0.4,normal,0.6074116965836711
+B3_reduced_HMM_features_threshold_tuned,0.35,normal,0.6276223776223776
+B5_LightGBM_deep_residual_threshold_tuned,0.45000000000000007,normal,0.7147937411095305
+B4_regression_decoupled,0.35,flipped,0.5003636363636363
+B4_classification_decoupled,0.5,normal,0.5675299359509886

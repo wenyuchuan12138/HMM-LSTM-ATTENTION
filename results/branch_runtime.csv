@@ -1,0 +1,10 @@
+model,seed,parameters,train_seconds
+B0_original_HMM_MRGA_LSTM,42,25857,29.25635080000029
+B1_seasonal_residual,42,25857,24.406402999999955
+B2_long_mlp_compression,42,15072,6.487481099999968
+B3_reduced_HMM_features,42,25857,23.87050259999978
+B4_regression_decoupled,42,25857,23.799834100000226
+B4_classification_decoupled,42,25857,18.11190140000008
+B6_combo_B1_B2_B3,42,15072,6.47993600000018
+B1_HMM_aux_no_gate,42,25281,19.636997099999917
+B5_LightGBM_deep_residual,42,15072,6.038306399999783
