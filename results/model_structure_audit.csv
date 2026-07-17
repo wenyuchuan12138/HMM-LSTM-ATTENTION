@@ -1,8 +1,15 @@
-check,status,evidence
+﻿check,status,evidence
 uses_HMMMRGALSTM_class,True,src/models.py::HMMMRGALSTM; main.py branch_specs
 hmm_posterior_probabilities,True,hmm_prob_0|hmm_prob_1|hmm_prob_2|hmm_prob_3|hmm_prob_4
-hmm_gate_layer,True,HMMMRGALSTM.gate enabled when use_hmm_gate=True
+legacy_hmm_gate_layer,True,HMMMRGALSTM.gate enabled when use_hmm_gate=True
+causal_HMM_filtering,True,hmm_model.causal_filter_probabilities; no predict_proba(x_all)
+markovian_state_mixture,True,MarkovianLSTMEncoder mixes K state-specific LSTMCell outputs by alpha_(t-1)
+markovian_hmm_not_plain_input,True,B9 excludes every hmm_* column from ordinary LSTM inputs
 multi_scale_input,True,short 24h branch plus long 168h branch or B2/B6 long_static MLP
 state_conditioned_attention,True,StateConditionedAttention projects HMM posterior probabilities
 prediction_residual_head,True,linear_residual head; B1/B5 use base + predicted residual
 B1_HMM_aux_without_complex_gate,True,"B1_HMM_aux_no_gate uses HMM features as inputs, with use_hmm_gate=False and use_state_attention=False"
+logit_residual_rolling_OOF,True,TimeSeriesSplit creates out-of-fold LightGBM probabilities for LGBM-LR-LSTM training
+logit_residual_addition,True,final_logit = base_logit + delta_logit
+logit_residual_zero_initialization,True,LGBMLogitResidualLSTM.delta_head weights and bias start at zero
+logit_residual_post_platt,True,Post calibrator is fitted on validation logits only

@@ -4,7 +4,7 @@
   "target": {
     "regression": "future_24h_carbon_intensity_vector",
     "classification": "current not high and any next 24h above train-only high threshold",
-    "high_threshold": 574.0
+    "high_threshold": 593.0
   },
   "feature_cols": [
     "carbon_intensity_gCO2eq_per_kWh",
@@ -59,7 +59,7 @@
     "hmm_prob_4"
   ],
   "date_range": {
-    "start": "2022-01-01 00:00:00+00:00",
+    "start": "2017-01-01 00:00:00+00:00",
     "end": "2025-12-31 23:00:00+00:00"
   },
   "hmm": {

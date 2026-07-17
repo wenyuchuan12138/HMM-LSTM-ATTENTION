@@ -8,11 +8,12 @@ from pathlib import Path
 class ExperimentConfig:
     seed: int = 42
     zone_id: str = "CN"
-    start_time: str = "2022-01-01 00:00:00+00:00"
+    start_time: str = "2017-01-01 00:00:00+00:00"
     end_time: str = "2025-12-31 23:00:00+00:00"
     train_end_time: str = "2024-06-30 23:00:00+00:00"
     val_end_time: str = "2024-12-31 23:00:00+00:00"
-    raw_dir: Path = Path("data/electricity_maps_full/raw")
+    raw_dir: Path = Path("data/electricity_maps/raw")
+    combined_data_path: Path = Path("data/17-25.csv")
     results_dir: Path = Path("results")
     artifacts_dir: Path = Path("artifacts")
     figures_dir: Path = Path("results/figures")

@@ -1,0 +1,2 @@
+﻿model,delta_logit_mean,delta_logit_std,delta_logit_min,delta_logit_max,mean_absolute_probability_change,oof_training_rows,epochs,best_val_logloss,parameters
+LGBM-LR-LSTM,0.4321858882904053,0.7408367395401001,-1.9270117282867432,3.5732498168945312,0.06904270891934118,54000,5,0.35381556969801037,22003

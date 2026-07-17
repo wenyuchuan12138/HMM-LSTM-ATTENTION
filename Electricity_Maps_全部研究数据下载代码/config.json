@@ -1,0 +1,32 @@
+{
+  "zone": "CN",
+  "start": "2022-01-01T00:00:00Z",
+  "end": "2026-01-01T00:00:00Z",
+  "signals": [
+    "carbon_intensity",
+    "renewable_percentage",
+    "carbon_free_percentage",
+    "total_load",
+    "net_load",
+    "electricity_mix",
+    "fossil_only_carbon_intensity"
+  ],
+  "required": [
+    "carbon_intensity_gCO2eq_per_kWh"
+  ],
+  "recommended_for_hmm": [
+    "carbon_intensity_gCO2eq_per_kWh",
+    "renewable_percentage",
+    "carbon_free_percentage",
+    "total_load_MW",
+    "net_load_MW"
+  ],
+  "recommended_for_deep_model": [
+    "carbon_intensity_gCO2eq_per_kWh",
+    "renewable_percentage",
+    "carbon_free_percentage",
+    "total_load_MW",
+    "net_load_MW",
+    "electricity_mix production/consumption fields"
+  ]
+}

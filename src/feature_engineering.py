@@ -41,13 +41,14 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     out["same_hour_7d_mean"] = same_hour_values.mean(axis=1)
     out["same_hour_7d_std"] = same_hour_values.std(axis=1)
 
-    same_last_year = out[["timestamp", "carbon_intensity_gCO2eq_per_kWh"]].copy()
-    same_last_year["timestamp"] = same_last_year["timestamp"] + pd.DateOffset(years=1)
-    same_last_year = same_last_year.rename(columns={"carbon_intensity_gCO2eq_per_kWh": "same_hour_last_year"})
-    out = out.merge(same_last_year, on="timestamp", how="left")
+    # 用时间键逐行查找去年同小时，避免闰年2月29日映射产生重复时间戳。
+    carbon_by_time = pd.Series(ci.to_numpy(), index=out["timestamp"])
+    previous_year = out["timestamp"] - pd.DateOffset(years=1)
+    out["same_hour_last_year"] = carbon_by_time.reindex(previous_year).to_numpy()
     out["same_hour_last_year"] = out["same_hour_last_year"].fillna(out["ci_lag_168h"])
 
     numeric_cols = out.select_dtypes(include=[np.number]).columns
     out[numeric_cols] = out[numeric_cols].replace([np.inf, -np.inf], np.nan)
-    out[numeric_cols] = out[numeric_cols].ffill().bfill()
+    # 只允许使用过去值填补；bfill会把未来信息带入初始滞后窗口。
+    out[numeric_cols] = out[numeric_cols].ffill()
     return out.dropna(subset=["ci_lag_168h", "ci_rolling_mean_720h"]).reset_index(drop=True)

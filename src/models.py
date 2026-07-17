@@ -146,3 +146,32 @@ class MarkovianHMMMultiScaleLSTM(nn.Module):
         long_context, _ = self._encode(self.long_encoder, long_x, long_probs, self.long_attn)
         z = self.deep(torch.cat([short_context, long_context, seasonal_x], dim=1))
         return self.reg_head(z) + self.linear_residual(residual_x), self.cls_head(z).squeeze(-1), short_alpha
+
+
+class LGBMLogitResidualLSTM(nn.Module):
+    """只学习 LightGBM 基线遗漏的分类 logit 修正量。"""
+
+    def __init__(self, input_dim: int, state_dim: int, hidden_dim: int = 32):
+        super().__init__()
+        self.short_lstm = nn.LSTM(input_dim, hidden_dim, batch_first=True)
+        self.long_lstm = nn.LSTM(input_dim, hidden_dim, batch_first=True)
+        self.deep = nn.Sequential(
+            nn.LayerNorm(hidden_dim * 2 + state_dim + 1),
+            nn.Linear(hidden_dim * 2 + state_dim + 1, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.15),
+        )
+        self.delta_head = nn.Linear(hidden_dim, 1)
+
+        # 零初始化使训练起点严格等价于 LightGBM：delta_logit = 0。
+        nn.init.zeros_(self.delta_head.weight)
+        nn.init.zeros_(self.delta_head.bias)
+
+    def forward(self, short_x, long_x, current_state, base_logit):
+        _, (short_h, _) = self.short_lstm(short_x)
+        _, (long_h, _) = self.long_lstm(long_x)
+        context = torch.cat(
+            [short_h[-1], long_h[-1], current_state, base_logit.unsqueeze(1)],
+            dim=1,
+        )
+        return self.delta_head(self.deep(context)).squeeze(1)

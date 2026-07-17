@@ -1,2 +1,2 @@
-model,residual_alpha,true_residual_std,pred_residual_std,residual_corr,mae_before,mae_after
-B5_LightGBM_deep_residual_optimized,0.1,35.96854015173686,0.7994420571577413,-0.01003813689863834,31.077646299036054,31.01961718175868
+﻿model,residual_alpha,true_residual_std,pred_residual_std,residual_corr,mae_before,mae_after
+B5_LightGBM_deep_residual_optimized,1.0,36.660765337218955,6.001380926775174,0.09426232721346782,31.304205903229736,30.426349117851696

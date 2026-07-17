@@ -114,3 +114,43 @@ def load_and_merge(raw_dir: Path, start_time: str, end_time: str, output_path: P
     merged[numeric_cols] = merged[numeric_cols].interpolate(limit_direction="both").ffill().bfill()
     merged.to_csv(output_path, index=False)
     return merged
+
+
+def profile_combined_csv(path: Path, output_path: Path) -> pd.DataFrame:
+    """检查2017-2025宽表的时间范围、重复和缺失情况。"""
+    df = pd.read_csv(path, low_memory=False)
+    time_col = _find_time_col(df.columns.tolist())
+    timestamp = pd.to_datetime(df[time_col], errors="coerce", utc=True)
+    profile = pd.DataFrame(
+        [
+            {
+                "source": "combined_17_25",
+                "file": path.name,
+                "exists": True,
+                "rows": len(df),
+                "columns": "|".join(df.columns),
+                "time_col": time_col,
+                "start_time": timestamp.min(),
+                "end_time": timestamp.max(),
+                "missing_ratio_max": float(df.isna().mean().max()),
+                "duplicate_timestamps": int(timestamp.duplicated().sum()),
+            }
+        ]
+    )
+    profile.to_csv(output_path, index=False, encoding="utf-8-sig")
+    print(profile.to_string(index=False))
+    return profile
+
+
+def load_combined_csv(path: Path, start_time: str, end_time: str, output_path: Path) -> pd.DataFrame:
+    """读取已合并的宽表，保留当前模型需要的全部原始字段。"""
+    df = pd.read_csv(path, low_memory=False)
+    time_col = _find_time_col(df.columns.tolist())
+    df["timestamp"] = pd.to_datetime(df[time_col], errors="coerce", utc=True)
+    df = _dedupe_by_timestamp(df, "timestamp")
+    df = df[(df["timestamp"] >= pd.Timestamp(start_time)) & (df["timestamp"] <= pd.Timestamp(end_time))]
+    df = df.sort_values("timestamp").reset_index(drop=True)
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    df[numeric_cols] = df[numeric_cols].interpolate(limit_direction="both").ffill().bfill()
+    df.to_csv(output_path, index=False)
+    return df
